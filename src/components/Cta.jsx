@@ -19,21 +19,6 @@ const CTA = () => {
             Get Started Now
           </a>
         </div>
-
-        <div className="mt-10 flex flex-wrap justify-center gap-6">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-[#18ffc8]">4.9/5</div>
-            <div className="text-[#09100d] text-sm">Trustpilot Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-[#18ffc8]">25K+</div>
-            <div className="text-[#09100d] text-sm">Active Users</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-[#18ffc8]">98%</div>
-            <div className="text-[#09100d] text-sm">Satisfaction Rate</div>
-          </div>
-        </div>
       </div>
     </section>
   );

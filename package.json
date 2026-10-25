@@ -1,5 +1,5 @@
 {
-  "name": "punterhub-landing",
+  "name": "todayPrediction",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",
+    "axios": "^1.20.0",
     "lucide-react": "^1.57.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

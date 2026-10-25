@@ -1,19 +1,11 @@
-// src/components/Features.jsx
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 
 import {
   CheckCircle2,
-  XCircle,
-  MinusCircle,
-  Trophy,
   TrendingUp,
-  Target,
-  CalendarDays,
-  ChevronRight,
-  ChevronLeft,
   Clock,
   ShieldCheck,
   Activity,
@@ -23,415 +15,203 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const settledPredictions = {
-  wins: 72,
-  losses: 23,
-  voids: 5,
+const API_URL = "https://punterhub-backend.onrender.com/client/getTip";
+
+// Format percentages safely.
+const formatPercentage = (value) => `${Number(value || 0).toFixed(1)}%`;
+
+// Format dates returned by MongoDB.
+const formatDate = (date) => {
+  if (!date) return "Date unavailable";
+
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "Date unavailable";
+  }
+
+  return parsedDate.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
-// Demonstration data only.
-// Replace these figures with actual settled prediction records.
-const performanceBySport = [
-  {
-    sport: "Football",
-    market: "Match Result",
-    settled: 45,
-    wins: 34,
-    losses: 11,
-  },
-  {
-    sport: "Football",
-    market: "Over/Under",
-    settled: 25,
-    wins: 19,
-    losses: 6,
-  },
-  {
-    sport: "Basketball",
-    market: "Match Winner",
-    settled: 20,
-    wins: 14,
-    losses: 6,
-  },
-  {
-    sport: "Tennis",
-    market: "Match Winner",
-    settled: 10,
-    wins: 5,
-    losses: 5,
-  },
-];
+// Map the backend schema to the frontend UI.
+const normalizeTip = (tip) => ({
+  id: tip._id,
+  bookingCode: tip.bettingCode || "No booking code",
+  company: tip.bettingSite || "Betting site unavailable",
+  status: "Won",
+  confidenceLevel: Number(tip.confidenceLevel || 0),
+  totalOdds: Number(tip.totalOdd || 0),
+  settledAt: formatDate(tip.updatedAt || tip.createdAt),
+  category: tip.primaryCategory || "Sports",
+  events: (tip.matches || []).map((match, index) => ({
+    id: `${tip._id}-${index}`,
+    teams: match.teams || "Teams unavailable",
+    prediction: match.prediction || "Prediction unavailable",
+  })),
+});
 
-// Demonstration betting slips.
-// These are illustrative records, not verified betting results.
-const winningSlips = [
-  {
-    id: 1,
-    bookingCode: "DEMO-001",
-    company: "Betting Company A",
-    status: "Won",
-    accuracyRate: 80,
-    totalOdds: 3.45,
-    settledAt: "14 Oct 2026, 8:30 PM",
-    events: [
-      {
-        sport: "Football",
-        homeTeam: "Arsenal",
-        awayTeam: "Chelsea",
-        market: "Over 1.5 Goals",
-        odds: 1.35,
-        prediction: "Over 1.5",
-        result: "2–1",
-        status: "Won",
-      },
-      {
-        sport: "Football",
-        homeTeam: "Real Madrid",
-        awayTeam: "Valencia",
-        market: "Match Result",
-        odds: 1.55,
-        prediction: "Real Madrid Win",
-        result: "3–0",
-        status: "Won",
-      },
-      {
-        sport: "Football",
-        homeTeam: "Inter Milan",
-        awayTeam: "Napoli",
-        market: "Double Chance",
-        odds: 1.65,
-        prediction: "Inter or Draw",
-        result: "2–0",
-        status: "Won",
-      },
-    ],
-  },
-  {
-    id: 2,
-    bookingCode: "DEMO-002",
-    company: "Betting Company B",
-    status: "Won",
-    accuracyRate: 75,
-    totalOdds: 2.85,
-    settledAt: "13 Oct 2026, 9:15 PM",
-    events: [
-      {
-        sport: "Football",
-        homeTeam: "Liverpool",
-        awayTeam: "Everton",
-        market: "Match Result",
-        odds: 1.45,
-        prediction: "Liverpool Win",
-        result: "2–0",
-        status: "Won",
-      },
-      {
-        sport: "Basketball",
-        homeTeam: "Team Alpha",
-        awayTeam: "Team Beta",
-        market: "Match Winner",
-        odds: 1.40,
-        prediction: "Team Alpha Win",
-        result: "102–96",
-        status: "Won",
-      },
-    ],
-  },
-  {
-    id: 3,
-    bookingCode: "DEMO-003",
-    company: "Betting Company C",
-    status: "Won",
-    accuracyRate: 100,
-    totalOdds: 2.10,
-    settledAt: "12 Oct 2026, 7:45 PM",
-    events: [
-      {
-        sport: "Tennis",
-        homeTeam: "Player A",
-        awayTeam: "Player B",
-        market: "Match Winner",
-        odds: 1.40,
-        prediction: "Player A Win",
-        result: "2–0 sets",
-        status: "Won",
-      },
-      {
-        sport: "Football",
-        homeTeam: "Team C",
-        awayTeam: "Team D",
-        market: "Over/Under",
-        odds: 1.50,
-        prediction: "Over 1.5 Goals",
-        result: "2–1",
-        status: "Won",
-      },
-    ],
-  },
-  {
-    id: 4,
-    bookingCode: "DEMO-004",
-    company: "Betting Company A",
-    status: "Lost",
-    accuracyRate: 50,
-    totalOdds: 4.20,
-    settledAt: "11 Oct 2026, 6:00 PM",
-    events: [
-      {
-        sport: "Football",
-        homeTeam: "Team E",
-        awayTeam: "Team F",
-        market: "Match Result",
-        odds: 1.80,
-        prediction: "Team E Win",
-        result: "1–1",
-        status: "Lost",
-      },
-      {
-        sport: "Basketball",
-        homeTeam: "Team G",
-        awayTeam: "Team H",
-        market: "Match Winner",
-        odds: 2.33,
-        prediction: "Team G Win",
-        result: "98–101",
-        status: "Lost",
-      },
-    ],
-  },
-  {
-    id: 5,
-    bookingCode: "DEMO-005",
-    company: "Betting Company B",
-    status: "Void",
-    accuracyRate: 50,
-    totalOdds: 1.95,
-    settledAt: "10 Oct 2026, 5:30 PM",
-    events: [
-      {
-        sport: "Football",
-        homeTeam: "Team I",
-        awayTeam: "Team J",
-        market: "Match Result",
-        odds: 1.95,
-        prediction: "Team I Win",
-        result: "Match abandoned",
-        status: "Void",
-      },
-    ],
-  },
-];
-
-const formatPercentage = (value) => `${value.toFixed(1)}%`;
-
-const StatCard = ({ title, value, subtitle, icon: Icon }) => (
-  <div className="rounded-2xl border border-[#376553] bg-[#162821] p-5 transition-all duration-300 hover:border-[#fea92a] sm:p-6">
-    <div className="mb-4 flex items-center justify-between">
-      <span className="text-sm font-medium text-gray-400">{title}</span>
-
-      <div className="rounded-xl bg-[#18ffc8]/10 p-2.5">
-        <Icon size={22} className="text-[#18ffc8]" />
-      </div>
-    </div>
-
-    <div className="text-3xl font-extrabold text-white sm:text-4xl">
-      {value}
-    </div>
-
-    <p className="mt-2 text-sm leading-6 text-gray-400">{subtitle}</p>
-  </div>
+// Winning status badge.
+const StatusBadge = () => (
+  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-400">
+    <CheckCircle2 size={14} />
+    Won
+  </span>
 );
 
-const StatusBadge = ({ status }) => {
-  const styles = {
-    Won: "border-emerald-400/20 bg-emerald-400/10 text-emerald-400",
-    Lost: "border-red-400/20 bg-red-400/10 text-red-400",
-    Void: "border-gray-400/20 bg-gray-400/10 text-gray-300",
-  };
+// Individual winning tip card.
+const SlipCard = ({ slip }) => (
+  <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#855391] bg-[#162821] transition-all duration-300 hover:border-[#fea92a] hover:shadow-xl hover:shadow-black/20">
+    {/* Header */}
+    <div className="border-b border-white/10 bg-[#102019] p-5">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
+            Booking Code
+          </p>
 
-  const icons = {
-    Won: CheckCircle2,
-    Lost: XCircle,
-    Void: MinusCircle,
-  };
-
-  const Icon = icons[status] || Activity;
-
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold ${
-        styles[status] || styles.Void
-      }`}
-    >
-      <Icon size={14} />
-      {status}
-    </span>
-  );
-};
-
-const SlipCard = ({ slip }) => {
-  const settledEvents = slip.events.filter(
-    (event) => event.status !== "Void"
-  );
-
-  const wonEvents = settledEvents.filter(
-    (event) => event.status === "Won"
-  );
-
-  const eventAccuracy =
-    settledEvents.length > 0
-      ? (wonEvents.length / settledEvents.length) * 100
-      : 0;
-
-  return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#855391] bg-[#162821] transition-all duration-300 hover:border-[#fea92a] hover:shadow-xl hover:shadow-black/20">
-
-      {/* Slip Header */}
-      <div className="border-b border-white/10 bg-[#102019] p-5">
-        <div className="mb-4 flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
-              Booking Code
-            </p>
-
-            <h3 className="break-all text-lg font-extrabold text-white">
-              {slip.bookingCode}
-            </h3>
-          </div>
-
-          <StatusBadge status={slip.status} />
+          <h3 className="break-all text-lg font-extrabold text-white">
+            {slip.bookingCode}
+          </h3>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-gray-300">
-          <ShieldCheck size={17} className="shrink-0 text-[#18ffc8]" />
-
-          <span className="truncate">{slip.company}</span>
-        </div>
-
-        <div className="mt-3 flex items-center gap-2 text-xs text-gray-400">
-          <Clock size={14} />
-
-          <span>{slip.settledAt}</span>
-        </div>
+        <StatusBadge />
       </div>
 
-      {/* Slip Statistics */}
-      <div className="grid grid-cols-2 border-b border-white/10">
-        <div className="border-r border-white/10 p-4">
-          <p className="mb-1 text-xs text-gray-400">Total Odds</p>
+      <div className="flex items-center gap-2 text-sm text-gray-300">
+        <ShieldCheck size={17} className="shrink-0 text-[#18ffc8]" />
 
-          <p className="text-2xl font-extrabold text-[#18ffc8]">
-            {slip.totalOdds.toFixed(2)}
-          </p>
-        </div>
-
-        <div className="p-4">
-          <p className="mb-1 text-xs text-gray-400">Accuracy</p>
-
-          <p className="text-2xl font-extrabold text-white">
-            {formatPercentage(eventAccuracy)}
-          </p>
-        </div>
+        <span className="truncate">{slip.company}</span>
       </div>
 
-      {/* Individual Events */}
-      <div className="flex-1 p-4 sm:p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <h4 className="text-sm font-bold text-white">
-            Events on Slip
-          </h4>
+      <div className="mt-3 flex items-center gap-2 text-xs text-gray-400">
+        <Clock size={14} />
+        <span>{slip.settledAt}</span>
+      </div>
+    </div>
 
-          <span className="rounded-md bg-white/5 px-2 py-1 text-xs text-gray-400">
-            {slip.events.length} events
-          </span>
-        </div>
+    {/* Tip statistics */}
+    <div className="grid grid-cols-2 border-b border-white/10">
+      <div className="border-r border-white/10 p-4">
+        <p className="mb-1 text-xs text-gray-400">Total Odds</p>
 
+        <p className="text-2xl font-extrabold text-[#18ffc8]">
+          {slip.totalOdds.toFixed(2)}
+        </p>
+      </div>
+
+      <div className="p-4">
+        <p className="mb-1 text-xs text-gray-400">Confidence</p>
+
+        <p className="text-2xl font-extrabold text-white">
+          {formatPercentage(slip.confidenceLevel)}
+        </p>
+      </div>
+    </div>
+
+    {/* Matches */}
+    <div className="flex-1 p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h4 className="text-sm font-bold text-white">Winning Selections</h4>
+
+        <span className="rounded-md bg-white/5 px-2 py-1 text-xs text-gray-400">
+          {slip.events.length} {slip.events.length === 1 ? "match" : "matches"}
+        </span>
+      </div>
+
+      {slip.events.length > 0 ? (
         <div className="space-y-3">
-          {slip.events.map((event, index) => (
+          {slip.events.map((event) => (
             <div
-              key={`${slip.id}-${index}`}
+              key={event.id}
               className="rounded-xl border border-white/5 bg-[#0d1913] p-3"
             >
-              <div className="mb-2 flex items-center justify-between gap-2">
+              <div className="mb-2">
                 <span className="text-xs font-medium text-[#18ffc8]">
-                  {event.sport}
-                </span>
-
-                <span className="text-xs font-bold text-gray-300">
-                  Odds: {event.odds.toFixed(2)}
+                  {slip.category}
                 </span>
               </div>
 
-              <p className="mb-2 text-sm font-semibold leading-5 text-white">
-                {event.homeTeam}{" "}
-                <span className="text-gray-500">vs</span>{" "}
-                {event.awayTeam}
+              <p className="mb-3 break-words text-sm font-semibold leading-5 text-white">
+                {event.teams}
               </p>
 
-              <div className="mb-3">
-                <p className="text-xs text-gray-500">Prediction Market</p>
+              <div className="border-t border-white/5 pt-3">
+                <p className="text-xs text-gray-500">Prediction</p>
 
-                <p className="mt-1 text-sm text-gray-300">
-                  {event.market}
+                <p className="mt-1 break-words text-sm font-semibold text-gray-200">
+                  {event.prediction}
                 </p>
-              </div>
-
-              <div className="flex items-end justify-between gap-2 border-t border-white/5 pt-3">
-                <div className="min-w-0">
-                  <p className="text-xs text-gray-500">Selection</p>
-
-                  <p className="mt-1 break-words text-xs font-semibold text-white">
-                    {event.prediction}
-                  </p>
-                </div>
-
-                <div className="shrink-0 text-right">
-                  <p className="text-xs text-gray-500">Result</p>
-
-                  <p className="mt-1 text-sm font-bold text-white">
-                    {event.result}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-3">
-                <StatusBadge status={event.status} />
               </div>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Slip Footer */}
-      <div className="border-t border-white/10 bg-[#102019] p-4">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-sm text-gray-400">Final Status</span>
-
-          <StatusBadge status={slip.status} />
-        </div>
-      </div>
-    </article>
-  );
-};
+      ) : (
+        <p className="text-sm text-gray-400">
+          No match details available for this tip.
+        </p>
+      )}
+    </div>
+  </article>
+);
 
 const Features = () => {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [tips, setTips] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const totalSettled =
-    settledPredictions.wins +
-    settledPredictions.losses;
+  useEffect(() => {
+    const controller = new AbortController();
 
-  const winRate =
-    totalSettled > 0
-      ? (settledPredictions.wins / totalSettled) * 100
-      : 0;
+    const fetchWinningTips = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-  const filteredSlips =
-    activeFilter === "All"
-      ? winningSlips
-      : winningSlips.filter(
-          (slip) => slip.status === activeFilter
-        );
+        const response = await axios.get(API_URL);
+
+        const result = response.data.data;
+
+        // Support common Express response formats.
+        const records = Array.isArray(result)
+          ? result
+          : Array.isArray(result.tips)
+            ? result.tips
+            : Array.isArray(result.data)
+              ? result.data
+              : [];
+
+        // Only show winning tips.
+        const winningTips = records
+          .filter((tip) => String(tip.status || "").toLowerCase() === "win")
+          .map(normalizeTip);
+
+        setTips(winningTips);
+      } catch (err) {
+        if (!controller.signal.aborted && !axios.isCancel(err)) {
+          console.error(
+            "Error fetching winning tips:",
+            err.response?.data || err.message,
+          );
+
+          setError("Unable to load winning tips. Please try again.");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchWinningTips();
+
+    return () => controller.abort();
+  }, []);
 
   return (
     <section
@@ -439,78 +219,52 @@ const Features = () => {
       className="overflow-hidden bg-[#09100d] py-16 sm:py-20"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Section Heading */}
+        {/* Section heading */}
         <div className="mx-auto mb-10 max-w-3xl text-center sm:mb-14">
-
-          <h2 className="mb-4 text-3xl font-extrabold text-white sm:text-4xl md:text-4xl">
+          <h2 className="mb-4 text-3xl font-extrabold text-white sm:text-4xl">
             Winning Selections.
           </h2>
 
           <p className="text-sm leading-7 text-gray-400 sm:text-base sm:leading-8">
-           Verified recent results of our accurate betting tips
+            Explore our recorded winning sports predictions.
           </p>
         </div>
 
-        {/* Performance Overview */}
-        <div className="mb-12 sm:mb-16">
-
-          {/* Win Rate */}
-          <div className="mt-5 rounded-2xl border border-[#376553] bg-[#162821] p-5 sm:p-7">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-
-              <div className="flex-1">
-                <div className="mb-2 flex items-center gap-2">
-                  <TrendingUp size={20} className="text-[#18ffc8]" />
-
-                  <h4 className="font-bold text-white">
-                    Settled Prediction Win Rate
-                  </h4>
-                </div>
-
-                <p className="max-w-2xl text-sm leading-7 text-gray-400">
-                  Win rate is calculated by dividing the number of winning
-                  settled predictions by all settled predictions, then
-                  multiplying by 100. Voided predictions are excluded.
-                </p>
-              </div>
-
-              <div className="min-w-[140px] text-center">
-                <div className="text-5xl font-extrabold text-[#18ffc8]">
-                  {formatPercentage(winRate)}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-[#855391] transition-all duration-500"
-                style={{ width: `${winRate}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Historical Records / Winning Slips */}
+        {/* Winning tips carousel */}
         <div id="winning-slips">
+          {loading ? (
+            <div className="rounded-2xl border border-[#376553] bg-[#162821] px-5 py-12 text-center">
+              <Activity
+                size={28}
+                className="mx-auto mb-3 animate-pulse text-[#18ffc8]"
+              />
 
-          {filteredSlips.length > 0 ? (
+              <p className="font-semibold text-white">
+                Loading winning tips...
+              </p>
+            </div>
+          ) : error ? (
+            <div className="rounded-2xl border border-red-400/20 bg-[#162821] px-5 py-12 text-center">
+              <p className="font-semibold text-red-400">{error}</p>
+
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="mt-4 rounded-lg bg-[#18ffc8] px-5 py-2 font-bold text-[#09100d] transition hover:opacity-80"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : tips.length > 0 ? (
             <Swiper
-              key={activeFilter}
               modules={[Autoplay, Navigation, Pagination]}
               spaceBetween={20}
               slidesPerView={1}
               slidesPerGroup={1}
-              navigation={{
-                prevEl: ".slips-prev",
-                nextEl: ".slips-next",
-              }}
-              pagination={{
-                clickable: true,
-                el: ".slips-pagination",
-              }}
+              navigation
+              // pagination={{ clickable: true }}
               autoplay={
-                filteredSlips.length > 3
+                tips.length > 3
                   ? {
                       delay: 5000,
                       disableOnInteraction: false,
@@ -518,7 +272,7 @@ const Features = () => {
                     }
                   : false
               }
-              loop={filteredSlips.length > 3}
+              loop={tips.length > 3}
               breakpoints={{
                 640: {
                   slidesPerView: 1,
@@ -535,28 +289,27 @@ const Features = () => {
               }}
               className="winning-slips-swiper !pb-12"
             >
-              {filteredSlips.map((slip) => (
-                <SwiperSlide key={slip.id} className="!h-auto">
-                  <SlipCard slip={slip} />
+              {tips.map((tip) => (
+                <SwiperSlide key={tip.id} className="!h-auto">
+                  <SlipCard slip={tip} />
                 </SwiperSlide>
               ))}
             </Swiper>
           ) : (
             <div className="rounded-2xl border border-[#376553] bg-[#162821] px-5 py-12 text-center">
               <p className="font-semibold text-white">
-                No slips found for this status.
+                No winning tips available yet.
               </p>
 
               <p className="mt-2 text-sm text-gray-400">
-                Choose another filter to view available records.
+                Check back when new winning tips have been recorded.
               </p>
             </div>
           )}
-
         </div>
       </div>
 
-      {/* Component-specific Swiper Styles */}
+      {/* Carousel styling */}
       <style>{`
         .winning-slips-swiper .swiper-pagination-bullet {
           width: 8px;
@@ -572,22 +325,13 @@ const Features = () => {
           background: #18ffc8;
         }
 
-        .slips-pagination .swiper-pagination-bullet {
-          width: 8px;
-          height: 8px;
-          border-radius: 999px;
-          background: #6b8276;
-          opacity: 1;
-          cursor: pointer;
-        }
-
-        .slips-pagination .swiper-pagination-bullet-active {
-          width: 24px;
-          background: #18ffc8;
-        }
-
         .winning-slips-swiper .swiper-slide {
           height: auto;
+        }
+
+        .winning-slips-swiper .swiper-button-next,
+        .winning-slips-swiper .swiper-button-prev {
+          color: #18ffc8;
         }
       `}</style>
     </section>
