@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // Keep the correct import path for Font Awesome icons
 import {
   FaCheckCircle,
@@ -20,15 +20,22 @@ import {
 // blue:"#18ffc8" (Primary Accent)
 
 const Terms = () => {
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
+  }, []);
+
   const termsData = [
     {
       icon: FaBalanceScale,
       title: "1. Definitions",
       content: [
-        "“Punter” / “Expert” / “Tipster” – an individual who provides betting tips, predictions, or analysis on the Platform.",
         "“Subscriber” / “User” – an individual who pays for access to punters’ tips.",
         "“Content” – all information, tips, analysis, or other materials shared by punters or the Platform.",
-        "“Subscription Fees” – payments made by Subscribers to access Content, from which the Platform may deduct a commission.",
+        "“Subscription Fees” – payments made by Subscribers to access Content..",
       ],
     },
     {
@@ -44,7 +51,6 @@ const Terms = () => {
       icon: FaLightbulb,
       title: "3. Nature of Services",
       content: [
-        "The Platform provides a marketplace for punters to share tips and subscribers to access them.",
         "The Platform does not accept or place bets, handle bookmaker accounts, or guarantee any winnings.",
         "All Content is provided for informational and entertainment purposes only.",
       ],
@@ -63,22 +69,12 @@ const Terms = () => {
       title: "5. Fees and Payments",
       content: [
         "Subscription Fees are set by punters and paid by subscribers through the Platform.",
-        "The Platform deducts a commission (e.g., 20%) from each subscription fee.",
         "All payments are final and non-refundable, except as required by law.",
       ],
     },
     {
       icon: FaBalanceScale,
-      title: "6. Punters’ Obligations",
-      content: [
-        "Punters are solely responsible for the accuracy and quality of their Content.",
-        "Punters must not provide misleading, false, or fraudulent tips.",
-        "Punters grant the Platform a non-exclusive license to display, promote, and distribute their Content.",
-      ],
-    },
-    {
-      icon: FaBalanceScale,
-      title: "7. Subscribers’ Obligations",
+      title: "6. Subscribers’ Obligations",
       content: [
         "Subscribers acknowledge that betting involves risk, and past performance does not guarantee future results.",
         "Subscribers agree not to redistribute or resell punters’ Content outside the Platform.",
@@ -87,7 +83,7 @@ const Terms = () => {
     },
     {
       icon: FaExchangeAlt,
-      title: "8. Responsible Gambling Disclaimer",
+      title: "7. Responsible Gambling Disclaimer",
       content: [
         "The Platform encourages responsible gambling.",
         "If you feel you may have a gambling problem, please seek help at BeGambleAware.org (UK) or local support services.",
@@ -96,15 +92,15 @@ const Terms = () => {
     },
     {
       icon: FaLightbulb,
-      title: "9. Intellectual Property",
+      title: "8. Intellectual Property",
       content: [
-        "All Content remains the property of the respective punter or the Platform.",
+        "All Content remains the property of the Platform.",
         "Unauthorized copying, sharing, or resale of Content is strictly prohibited.",
       ],
     },
     {
       icon: FaGavel,
-      title: "10. Limitation of Liability",
+      title: "9. Limitation of Liability",
       content: [
         "The Platform is not liable for:",
         "- Accuracy, reliability, or outcomes of punters’ Content.",
@@ -115,23 +111,23 @@ const Terms = () => {
     },
     {
       icon: FaUserLock,
-      title: "11. Termination",
+      title: "10. Termination",
       content: [
         "We may suspend or terminate accounts for violating these Terms or applicable laws.",
         "Users may delete their accounts at any time, but fees already paid are non-refundable.",
       ],
     },
-    {
-      icon: FaBalanceScale,
-      title: "12. Governing Law",
-      content: [
-        "These Terms are governed by the laws of Nigeria.",
-        "Any disputes will be subject to the exclusive jurisdiction of the courts in Nigeria.",
-      ],
-    },
+    // {
+    //   icon: FaBalanceScale,
+    //   title: "11. Governing Law",
+    //   content: [
+    //     "These Terms are governed by the laws of Nigeria.",
+    //     "Any disputes will be subject to the exclusive jurisdiction of the courts in Nigeria.",
+    //   ],
+    // },
     {
       icon: FaExchangeAlt,
-      title: "13. Changes to Terms",
+      title: "11. Changes to Terms",
       content: [
         "We may update these Terms from time to time.",
         "Continued use of the Platform after changes constitutes acceptance of the updated Terms.",
@@ -153,13 +149,13 @@ const Terms = () => {
           {/* Used Orange for the date highlight */}
           <p className="text-lg text-[#efefef] font-medium">
             Last Updated:{" "}
-            <span className="text-[#fea92a]">August 24, 2025</span>
+            <span className="text-[#fea92a]">August 24, 2026</span>
           </p>
           {/* Introductory paragraph is now white for better contrast */}
           <p
             className={`mt-4 text-[${EMPHASIS_TEXT_COLOR}] leading-relaxed italic text-opacity-90`}
           >
-            Welcome to The PunterHub (“the Platform”, “we”, “us”, “our”). By
+            Welcome to The Todayprediction365 (“the Platform”, “we”, “us”, “our”). By
             accessing or using our services, you (“User”, “Subscriber”, or
             “Punter”) agree to these Terms & Conditions. If you do not agree,
             you must not use the Platform.
@@ -176,7 +172,7 @@ const Terms = () => {
             >
               <div className="flex items-center mb-3">
                 {/* Primary Blue icon */}
-                <section.icon className="text-3xl text-[#18ffc8] mr-3" />
+                <section.icon className="text-3xl text-[#fea92a] mr-3" />
                 {/* Section Title uses main White color */}
                 <h2 className="text-2xl font-bold text-[#efefef]">
                   {section.title}

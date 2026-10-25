@@ -16,11 +16,11 @@ const Footer = () => {
           <div>
             <a href="/" className="flex items-center">
               <img src={logo} alt="Logo" className="h-8" />
-              <h2 className="text-xl font-bold text-[#efefef] ml-2">
+              <h2 className="text-lg font-bold text-[#efefef] ml-1">
                 TodayPrediction365
               </h2>
             </a>
-            <p className="text-[#efefef] mb-4">
+            <p className="text-[#efefef] mb-4 text-sm">
               The premier platform for tatical insight.
             </p>
           </div>
@@ -30,10 +30,10 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://app.thepunterhub.com/register"
+                  href="https://app.todayprediction365.com/register"
                   className="text-[#efefef] hover:text-[#fea92a] transition-colors"
                 >
-                  Find Experts
+                  Join Membership
                 </a>
               </li>
               <li>

@@ -27,7 +27,7 @@ const Sports = () => {
             {[...images, ...images].map((image, index) => (
               <div
                 key={`${image}-${index}`}
-                className="h-[190px] w-[calc((100vw-3rem)/2)] shrink-0 overflow-hidden rounded-xl border border-[#376553] bg-[#09100d] sm:h-[190px] sm:w-[calc((100vw-5rem)/4)] lg:h-[220px] lg:w-[calc((100vw-7.5rem)/7)]"
+                className="h-[190px] w-[calc((100vw-3rem)/2)] shrink-0 overflow-hidden rounded-xl border border-[#376553] bg-[#09100d] sm:h-[170px] sm:w-[calc((100vw-5rem)/4)] lg:h-[190px] lg:w-[calc((100vw-7.5rem)/7)]"
               >
                 <img
                   src={image}

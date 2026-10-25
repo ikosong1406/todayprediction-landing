@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import background from "../assets/background.gif";
 
 const Pricing = () => {
   const [country, setCountry] = useState(null);
@@ -84,42 +85,32 @@ const Pricing = () => {
   return (
     <section
       id="pricing"
-      className="relative overflow-hidden bg-[#09100d] px-4 py-20 sm:px-6"
+      className="relative overflow-hidden bg-[#09100d] px-3.5 py-20 sm:px-6"
     >
-      {/* Decorative background */}
-      <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-[#376553]/20 blur-[100px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-0 h-72 w-72 rounded-full bg-[#fea92a]/10 blur-[100px]" />
+        <div className="absolute inset-0 z-0">
+             <img src={background} alt="" className="h-full w-full object-cover" />
+             <div className="absolute inset-0 bg-black/50" />
+        </div>
 
-      <div className="relative mx-auto max-w-5xl">
+      <div className="relative mx-auto max-w-5xl z-10">
         {/* Section heading */}
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-extrabold text-[#efefef] sm:text-4xl md:text-5xl">
+          <h2 className="mb-4 text-3xl font-extrabold text-[#efefef] sm:text-4xl md:text-4xl">
             Unlock Every Prediction
           </h2>
 
-          <p className="mx-auto max-w-2xl text-base leading-7 text-gray-400 sm:text-lg">
+          <p className="mx-auto max-w-2xl text-base leading-7 text-white text-sm">
             Get full access to daily football predictions, multiple betting
             markets, and premium features — all in one plan.
           </p>
         </div>
 
         {/* Single pricing card */}
-        <div className="mx-auto max-w-3xl overflow-hidden rounded-3xl border border-[#376553] bg-[#101a15] shadow-2xl shadow-black/30">
+        <div className="mx-auto max-w-3xl overflow-hidden rounded-3xl border border-[#855391] bg-[#101a15] shadow-2xl shadow-black/30">
           {/* Card header */}
-          <div className="border-b border-[#376553]/60 bg-gradient-to-br from-[#173d2b] to-[#101a15] p-6 sm:p-10">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#fea92a]">
-                  TodayPrediction365
-                </p>
-              </div>
+          <div className="border-b border-[#376553]/60 bg-gradient-to-br from-[#173d2b] to-[#101a15] p-5 sm:p-10">
 
-              <span className="rounded-full px-3 py-1.5 text-xs font-bold text-[#855391]">
-                FULL ACCESS
-              </span>
-            </div>
-
-            <div className="mt-8">
+            <div className="mt-4">
               {country === null ? (
                 <p className="text-sm text-gray-400">
                   Checking your regional price...
@@ -138,7 +129,7 @@ const Pricing = () => {
 
             <a
               href="https://app.todayprediction365.com"
-              className={`mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-[#18ffc8] px-6 py-4 text-base font-bold text-[#09100d] transition duration-300 hover:shadow-lg hover:shadow-[#fea92a]/20 ${
+              className={`mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-[#18ffc8] px-6 py-3 text-base font-bold text-[#09100d] transition duration-300 hover:shadow-lg hover:shadow-[#fea92a]/20 ${
                 country === null ? "pointer-events-none opacity-60" : ""
               }`}
               aria-disabled={country === null}
@@ -146,13 +137,12 @@ const Pricing = () => {
                 if (country === null) event.preventDefault();
               }}
             >
-              Subscribe Now
-              <span aria-hidden="true">→</span>
+              Join Membership
             </a>
           </div>
 
           {/* Benefits */}
-          <div className="p-6 sm:p-10">
+          <div className="p-4 sm:p-10">
             <h4 className="mb-6 text-lg font-bold text-white">
               Everything included in your plan
             </h4>
