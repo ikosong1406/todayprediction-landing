@@ -178,9 +178,6 @@ const SamplePredictions = () => {
                 )}
               </div>
 
-              <span className="shrink-0 rounded-lg border border-[#fea92a]/40 bg-[#fea92a]/10 px-3 py-2 text-xs font-bold text-[#fea92a]">
-                {selectionCount} SELECTIONS
-              </span>
             </div>
 
             <div className="p-4 sm:p-7">
@@ -282,9 +279,6 @@ const SamplePredictions = () => {
                     <p className="text-2xl font-extrabold text-[#fea92a] sm:text-3xl">
                       {totalOdd > 0 ? totalOdd : "N/A"}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {selectionCount} selections
-                    </p>
                   </div>
                 </div>
               </div>
@@ -300,10 +294,6 @@ const SamplePredictions = () => {
                       Bookmaker: {bookmaker}
                     </p>
                   </div>
-
-                  <span className="rounded-md bg-[#fea92a]/10 px-2 py-1 text-xs font-bold text-[#fea92a]">
-                    PREMIUM
-                  </span>
                 </div>
 
                 <div className="relative mt-4 overflow-hidden rounded-lg border border-[#376553]/40 bg-[#14251b] p-4">
@@ -355,11 +345,6 @@ const SamplePredictions = () => {
             </div>
           </div>
         )}
-
-        <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-6 text-gray-500">
-          Demonstration betslip only. Predictions and odds may change.
-          Betting involves risk.
-        </p>
       </div>
     </section>
   );
