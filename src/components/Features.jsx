@@ -5,7 +5,6 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 
 import {
   CheckCircle2,
-  TrendingUp,
   Clock,
   ShieldCheck,
   Activity,
@@ -114,17 +113,15 @@ const SlipCard = ({ slip }) => (
       </div>
     </div>
 
-      {/* Individual Events */}
-      <div className="flex-1 p-4 sm:p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <h4 className="text-sm font-bold text-white">
-            Events on Slip
-          </h4>
+    {/* Individual Events */}
+    <div className="flex-1 p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <h4 className="text-sm font-bold text-white">Events on Slip</h4>
 
-          <span className="rounded-md bg-white/5 px-2 py-1 text-xs text-gray-400">
-            {slip.events.length} events
-          </span>
-        </div>
+        <span className="rounded-md bg-white/5 px-2 py-1 text-xs text-gray-400">
+          {slip.events.length} events
+        </span>
+      </div>
 
       {slip.events.length > 0 ? (
         <div className="space-y-3">
@@ -153,19 +150,25 @@ const SlipCard = ({ slip }) => (
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Slip Footer */}
-      <div className="border-t border-white/10 bg-[#102019] p-4">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-sm text-gray-400">Final Status</span>
-
-          <StatusBadge status={slip.status} />
+      ) : (
+        <div className="rounded-xl border border-white/5 bg-[#0d1913] p-3 text-center">
+          <p className="text-sm font-semibold text-gray-400">
+            No events found on this slip.
+          </p>
         </div>
+      )}
+    </div>
+
+    {/* Slip Footer */}
+    <div className="border-t border-white/10 bg-[#102019] p-4">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm text-gray-400">Final Status</span>
+
+        <StatusBadge status={slip.status} />
       </div>
-    </article>
-  );
-};
+    </div>
+  </article>
+);
 
 const Features = () => {
   const [tips, setTips] = useState([]);
@@ -245,12 +248,6 @@ const Features = () => {
                 size={28}
                 className="mx-auto mb-3 animate-pulse text-[#18ffc8]"
               />
-
-              <div className="min-w-[140px] text-center">
-                <div className="text-5xl font-extrabold text-[#18ffc8]">
-                  {formatPercentage(winRate)}
-                </div>
-              </div>
             </div>
           ) : error ? (
             <div className="rounded-2xl border border-red-400/20 bg-[#162821] px-5 py-12 text-center">
