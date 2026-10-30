@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_URL = "https://punterhub-backend.onrender.com/client/getTip";
+const API_URL = "https://api.todayprediction365.com/client/getTip";
 
 const formatDate = (date) => {
   if (!date) return "";

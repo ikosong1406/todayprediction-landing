@@ -3,18 +3,13 @@ import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 
-import {
-  CheckCircle2,
-  Clock,
-  ShieldCheck,
-  Activity,
-} from "lucide-react";
+import { CheckCircle2, Clock, ShieldCheck, Activity } from "lucide-react";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const API_URL = "https://punterhub-backend.onrender.com/client/getTip";
+const API_URL = "https://api.todayprediction365.com/client/getTip";
 
 // Format percentages safely.
 const formatPercentage = (value) => `${Number(value || 0).toFixed(1)}%`;
