@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -56,25 +55,21 @@ const SamplePredictions = () => {
         console.log("Fetched tips:", tips);
 
         // Select the newest active tip.
-        const latestTip = tips
-          .filter((item) => item?.status === "active")
-          .sort(
-            (a, b) =>
-              new Date(b.createdAt || 0).getTime() -
-              new Date(a.createdAt || 0).getTime()
-          )[0] || null;
-
-        console.log("Latest active tip:", latestTip);
+        const latestTip =
+          tips
+            .filter((item) => item?.status === "active")
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt || 0).getTime() -
+                new Date(a.createdAt || 0).getTime(),
+            )[0] || null;
 
         setTip(latestTip);
       } catch (err) {
-        if (
-          !controller.signal.aborted &&
-          !axios.isCancel(err)
-        ) {
+        if (!controller.signal.aborted && !axios.isCancel(err)) {
           console.error(
             "Error fetching tips:",
-            err.response?.data || err.message
+            err.response?.data || err.message,
           );
 
           setError("Unable to load today's tip. Please try again.");
@@ -91,9 +86,7 @@ const SamplePredictions = () => {
     return () => controller.abort();
   }, []);
 
-  const matches = Array.isArray(tip?.matches)
-    ? tip.matches
-    : [];
+  const matches = Array.isArray(tip?.matches) ? tip.matches : [];
 
   // First two selections are public.
   const visibleSelections = matches.slice(0, 2);
@@ -177,7 +170,6 @@ const SamplePredictions = () => {
                   </p>
                 )}
               </div>
-
             </div>
 
             <div className="p-4 sm:p-7">
@@ -198,9 +190,7 @@ const SamplePredictions = () => {
                       </h5>
 
                       <div className="mt-4 rounded-lg border border-[#376553]/40 bg-[#14251b] p-3">
-                        <p className="text-xs text-gray-500">
-                          Prediction
-                        </p>
+                        <p className="text-xs text-gray-500">Prediction</p>
 
                         <p className="mt-1 break-words text-sm font-semibold text-gray-200">
                           {selection.prediction || "Not specified"}
@@ -228,8 +218,7 @@ const SamplePredictions = () => {
                         className="mb-3 rounded-lg border border-[#376553]/40 bg-[#14251b] p-4 last:mb-0"
                       >
                         <p className="text-xs text-gray-500">
-                          SELECTION{" "}
-                          {String(index + 3).padStart(2, "0")}
+                          SELECTION {String(index + 3).padStart(2, "0")}
                         </p>
 
                         <p className="mt-2 font-bold text-white">
@@ -287,9 +276,7 @@ const SamplePredictions = () => {
               <div className="mt-4 rounded-xl border border-[#376553]/50 bg-[#09100d] p-5">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-bold text-white">
-                      Betting Code
-                    </p>
+                    <p className="text-sm font-bold text-white">Betting Code</p>
                     <p className="mt-1 text-xs text-gray-500">
                       Bookmaker: {bookmaker}
                     </p>
