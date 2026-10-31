@@ -1,4 +1,5 @@
 import "./App.css";
+import OrganizationSchema from "./components/OrganizationSchema";
 
 import Home from "./pages/Home";
 import Terms from "./pages/Terms";
@@ -8,38 +9,36 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import CookieConsent from "./components/Cookies";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <Router>
-      <Header />
+    <>
+      <OrganizationSchema />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy" element={<Privacy />} />
+      <Router>
+        <Header />
 
-        <Route
-          path="*"
-          element={
-            <div className="flex min-h-[60vh] items-center justify-center">
-              <h1 className="text-3xl font-bold">
-                404 - Not Found
-              </h1>
-            </div>
-          }
-        />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
 
-      <Footer />
+          <Route
+            path="*"
+            element={
+              <div className="flex min-h-[60vh] items-center justify-center">
+                <h1 className="text-3xl font-bold">404 - Not Found</h1>
+              </div>
+            }
+          />
+        </Routes>
 
-      <CookieConsent />
-    </Router>
+        <Footer />
+
+        <CookieConsent />
+      </Router>
+    </>
   );
 }
 
