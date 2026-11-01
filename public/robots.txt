@@ -1,5 +1,35 @@
 
+# Allow traditional search engines
 User-agent: *
 Allow: /
 
+# OpenAI search crawler
+User-agent: OAI-SearchBot
+Allow: /
+
+# OpenAI model training crawler
+User-agent: GPTBot
+Allow: /
+
+# ChatGPT user-initiated browsing
+User-agent: ChatGPT-User
+Allow: /
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Microsoft Bing
+User-agent: Bingbot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+
+# Sitemap
 Sitemap: https://todayprediction365.com/sitemap.xml
